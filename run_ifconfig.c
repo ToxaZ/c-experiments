@@ -1,12 +1,13 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <errno.h>
+#include <unistd.h>
 #include <string.h>
 
 int main()
 {
-	if (execlp("/sbin/ifconfig", "ifconfig", NULL) != 0)
-		if (execlp("ipconfig", "ipconfig", NULL) != 0) {
-			fprintf(stderr, "Cannot run ipconfig: %s", strerror(execlp("ipconfig", "ipconfig", NULL)));
+	if (execl("/sbin/ifconfig", "/sbin/ifconfig", NULL) == -1)
+		if (execlp("ipconfig", "ipconfig", NULL) == -1) {
+			fprintf(stderr, "Cannot run ipconfig: %s", strerror(errno));
 			return 1;	
 		}
 	return 0;
