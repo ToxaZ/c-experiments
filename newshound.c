@@ -2,6 +2,13 @@
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
+
+void error(char *msg)
+{
+	fprintf(stderr, "%s: %s\n", msg, strerror(errno));
+	exit(1);
+}
 
 int main(int argc, char *argv[])
 {
@@ -19,8 +26,7 @@ int main(int argc, char *argv[])
 		char *vars[] = {var, NULL};
 		pid_t pid = fork();
 		if (pid == -1) {
-			fprintf(stderr, "Can't fork process: %s\n", strerror(errno));
-			return 1;
+			error("Can't fork process");
 		} 
 		if (!pid) {
 			if (execle(
@@ -28,8 +34,7 @@ int main(int argc, char *argv[])
 				"/usr/bin/python",
 				"rss_gossip/rssgossip.py",
 				phrase, NULL, vars) == -1) {
-					fprintf(stderr, "Can't run script: %s\n", strerror(errno));
-				return 1;
+					error("Can't run script");
 			}
 		}
 	}
